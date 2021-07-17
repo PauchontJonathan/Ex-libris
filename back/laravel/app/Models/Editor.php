@@ -9,6 +9,8 @@ class Editor extends Model
 {
     use HasFactory;
 
+    protected $table = 'editors';
+
     protected $fillable = [
         'id',
         'name',
