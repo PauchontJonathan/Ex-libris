@@ -70,37 +70,51 @@ class UserController extends Controller
             $errors[] = $object;   
         }
 
-        if(filter_var($newEmail, FILTER_VALIDATE_EMAIL) === false) {
-            $object = new \stdClass();
-            $object->key = $key++;
-            $object->content = 'L\'email n\'est pas valide !';
-            $errors[] = $object;
+
+        if(preg_match("#[a-zA-Z0-9]#", $newPassword)) {
+            
+            if(filter_var($newEmail, FILTER_VALIDATE_EMAIL) === false) {
+                $object = new \stdClass();
+                $object->key = $key++;
+                $object->content = 'L\'email n\'est pas valide !';
+                $errors[] = $object;
+    
+            } else {
+    
+                $existEmail = User::where('email', '=', $newEmail)->first();  
+    
+                if($existEmail !== NULL) {
+                    $object = new \StdClass();
+                    $object->key = $key++;
+                    $object->content = 'Veuillez choisir un autre email !';
+                    $errors[] = $object;
+                    
+                    return response()->json($errors, 400);
+    
+                } else {
+    
+                    $newUser = new User;
+    
+                    $newUser->email = $newEmail;
+                    $newUser->password = $newPassword;
+                    $newUser->town = $newTown;
+                    $newUser->adress = $newAdress;
+                    $newUser->name = $newName;
+                    $newUser->surname = $newSurname;
+    
+                    $newUser->save();
+
+                    return response()->json("Le compte a bien été enregistré !");
+                    
+                    }
+            }
 
         } else {
 
-            $existEmail = User::where('email', '=', $newEmail)->first();  
-
-            if($existEmail !== NULL) {
-                $object = new \StdClass();
-                $object->key = $key++;
-                $object->content = 'Veuillez choisir un autre email !';
-                $errors[] = $object;
-                
-                return response()->json($errors, 400);
-
-            } else {
-
-                $newUser = new User;
-
-                $newUser->email = $newEmail;
-                $newUser->password = $newPassword;
-                $newUser->town = $newTown;
-                $newUser->adress = $newAdress;
-                $newUser->name = $newName;
-                $newUser->surname = $newSurname;
-
-                $newUser->save();
-                }
+            $object = new \stdClass();
+            $object->key = $key++;
+            $object->content = 'Le mot-de-passe doit contenir au minimum 1 minuscule, 1 majuscule et 1 chiffre !';
+            $errors[] = $object;
         }
 
 
