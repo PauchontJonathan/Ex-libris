@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -92,11 +93,13 @@ class UserController extends Controller
                     return response()->json($errors, 400);
     
                 } else {
+
+                    $hashedPassword = Hash::make($newPassword);
     
                     $newUser = new User;
     
                     $newUser->email = $newEmail;
-                    $newUser->password = $newPassword;
+                    $newUser->password = $hashedPassword;
                     $newUser->town = $newTown;
                     $newUser->adress = $newAdress;
                     $newUser->name = $newName;
