@@ -19,3 +19,5 @@ Route::get('/', function () {
 });
 
 Route::post('/api/v1/user/signup',[UserController::class, 'signup']);
+
+Route::post('/api/v1/user/login', [UserController::class, 'login']);

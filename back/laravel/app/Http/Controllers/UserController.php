@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
@@ -124,6 +125,20 @@ class UserController extends Controller
 
         return response()->json($errors, 400);
 
+
+    }
+
+    public function login(Request $request) 
+
+    {
+
+        $creds = $request->only(['email', 'password']);
+
+        $token = auth()->attempt($creds);
+
+        if(!$token) return response()->json(['error' => 'Le mot-de-passe ou l\'email est incorrect !'], 401);
+
+        return response()->json(['token:' => $token], 200);
 
     }
 }
